@@ -1,4 +1,3 @@
-
 import '../model/Product.dart';
 
 class ProductData {

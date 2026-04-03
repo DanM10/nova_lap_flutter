@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:nova_lap/model/Product.dart';
 
 class Detail extends StatefulWidget {
-  Detail({super.key, required this.laptop, required this.onAdd});
+  const Detail({super.key, required this.laptop});
 
-  Product laptop;
-  final Function(Product) onAdd;
+  final Product laptop;
 
   @override
   State<StatefulWidget> createState() {
@@ -31,9 +30,7 @@ class DetailStat extends State<Detail> {
 
   @override
   Widget build(BuildContext context) {
-    void addThisLaptop(){
-      widget.onAdd(widget.laptop);
-    }
+
 
     return Scaffold(
       appBar: AppBar(title: const Text('NovaLap')),
@@ -45,7 +42,14 @@ class DetailStat extends State<Detail> {
               Text(widget.laptop.brand,style: Theme.of(context).textTheme.titleLarge,),
               Text(widget.laptop.name,style: Theme.of(context).textTheme.bodyMedium,),
               Text(widget.laptop.description, style: Theme.of(context).textTheme.bodySmall,),
-              ElevatedButton(onPressed: addThisLaptop, child: Text('Add to cart'))
+              ElevatedButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Buying ${widget.laptop.name}...')),
+                  );
+                },
+                child: Text('Buy Now'),
+              )
             ]),
       ),
     );

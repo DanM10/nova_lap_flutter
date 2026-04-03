@@ -16,41 +16,25 @@ class Home extends StatefulWidget {
 
 class HomeStat extends State<Home> {
   final List<Product> _laptops = ProductData.products;
-  List<Product> _cartLaptops = [];
-
-  void addLaptopTocart(Product laptop){
-    setState(() {
-      _cartLaptops.add(laptop);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F7),
       appBar: AppBar(
         title: const Text('NovaLap'),
-        actions: [
-          IconButton(
-            icon: Badge.count(
-              count: _cartLaptops.length,
-              child: const Icon(Icons.shopping_cart),
-            ),
-            onPressed: () {},
-          ),
-        ],
       ),
 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(12),
         child: ListView.builder(
           itemCount: _laptops.length,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (BuildContext context, int index) => LaptopListBuilder(
+          itemBuilder: (BuildContext context, int index) => laptopListBuilder(
             context,
             _laptops[index],
-            index == _laptops.length - 1,
-            addLaptopTocart
+            index == _laptops.length - 1
           ),
         ),
       ),
@@ -58,62 +42,79 @@ class HomeStat extends State<Home> {
   }
 }
 
-Widget LaptopListBuilder(
-  BuildContext context,
-  Product laptop,
-  bool lastItem,
-  Function(Product) onAdd
-) {
-  return Padding(
-    padding: const EdgeInsets.all(10),
-    child: Column(
-      spacing: 3,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Image.network(laptop.firstImageSrc, scale: 3),
-        Row(
-          textDirection: TextDirection.ltr,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(laptop.brand, style: Theme.of(context).textTheme.titleLarge),
-            Row(
-              spacing: 30,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Detail(laptop: laptop,onAdd: onAdd,),
-                      ),
-                    );
-                  },
-                  child: Text('View'),
-                ),
-                ElevatedButton(
-                  onPressed: () => onAdd(laptop),
-                  child: Text('Add to cart'),
-                ),
-              ],
-            ),
-          ],
+Widget laptopListBuilder(
+    BuildContext context,
+    Product laptop,
+    bool lastItem
+    ) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Detail(laptop: laptop),
         ),
-        Row(
-          textDirection: TextDirection.ltr,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(laptop.name, style: Theme.of(context).textTheme.bodyMedium),
-            Text(
-              '\$${laptop.price}',
+      );
+    },
+    child: Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            blurRadius: 8,
+            offset: Offset(0, 3),
+            color: Color.fromARGB(20, 0, 0, 0),
+          ),
+        ],
+      ),
+
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              laptop.firstImageSrc,
+              width: double.infinity,
+              height: 180,
+              fit: BoxFit.contain,
+            ),
+          ),
+
+          const SizedBox(height: 14),
+
+          Text(
+            laptop.brand,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          const SizedBox(height: 4),
+
+          Text(
+            laptop.name,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+
+          const SizedBox(height: 10),
+
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+                '\$${laptop.price}',
               style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        if (!lastItem) Divider(color: Theme.of(context).colorScheme.primary),
-      ],
-    ),
+                fontSize: 20,
+              )
+            )
+          )
+        ],
+      )
+    )
   );
 }
