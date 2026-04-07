@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nova_lap/model/Product.dart';
+import 'package:nova_lap/thankyou.dart';
 
 class CheckoutPage extends StatefulWidget {
   const CheckoutPage({super.key, required this.laptop});
@@ -94,7 +95,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
   void _applyDiscountCode() {
     final code = _discountCodeController.text.trim();
 
-    // If discount already applied, do nothing
     if (_isStudentDiscountApplied) {
       return;
     }
@@ -119,7 +119,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   void _removeDiscount() {
     setState(() {
       _isStudentDiscountApplied = false;
-      // keep the code text so user can see what they had, or clear if you prefer
+
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Student discount removed.')),
@@ -132,10 +132,30 @@ class _CheckoutPageState extends State<CheckoutPage> {
     }
 
     final total = _calculateTotalPrice();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Order placed for ${widget.laptop.name} (Total: \$${total.toStringAsFixed(2)})',
+
+    final fullName = '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}'.trim();
+    final email = _emailController.text.trim();
+
+    final cardNumber = _cardNumberController.text.trim();
+    String maskedCard = '';
+    if (cardNumber.length >= 4) {
+      final last4 = cardNumber.substring(cardNumber.length - 4);
+      maskedCard = '**** **** **** $last4';
+    } else {
+      maskedCard = '**** **** **** ${cardNumber.padLeft(4, '*')}';
+    }
+
+    final orderId = 'ORD${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ThankYouPage(
+          orderId: orderId,
+          product: widget.laptop,
+          totalAmount: total,
+          customerName: fullName,
+          customerEmail: email,
+          maskedCardNumber: maskedCard,
         ),
       ),
     );
@@ -183,7 +203,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               Text('Brand: ${widget.laptop.brand}'),
               const SizedBox(height: 16),
 
-              // First & last name
               Row(
                 children: [
                   Expanded(
@@ -231,7 +250,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               const SizedBox(height: 10),
 
-              // Email
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(
@@ -250,7 +268,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               const SizedBox(height: 10),
 
-              // Address
               TextFormField(
                 controller: _addressController,
                 decoration: const InputDecoration(
@@ -265,7 +282,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               const SizedBox(height: 10),
 
-              // Country & state
               Row(
                 children: [
                   Expanded(
@@ -313,7 +329,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               const SizedBox(height: 10),
 
-              // City & postal code
               Row(
                 children: [
                   Expanded(
@@ -355,7 +370,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               const SizedBox(height: 10),
 
-              // Mobile
               TextFormField(
                 controller: _mobileController,
                 decoration: const InputDecoration(
@@ -388,7 +402,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               _buildCardBrandChips(),
               const SizedBox(height: 8),
 
-              // Card number
               TextFormField(
                 controller: _cardNumberController,
                 decoration: const InputDecoration(
@@ -425,7 +438,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               const SizedBox(height: 12),
 
-              // Expiry + CVV
               Row(
                 children: [
                   Expanded(
@@ -437,6 +449,36 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[0-9/]')),
+                        TextInputFormatter.withFunction((oldValue, newValue) {
+                          final text = newValue.text;
+                          if (text.isEmpty) {
+                            return newValue;
+                          }
+                          if (text.length > 5) {
+                            return oldValue;
+                          }
+                          if (text.length == 1) {
+                            final c = text[0];
+                            if (c != '0' && c != '1') {
+                              return oldValue;
+                            }
+                            return newValue;
+                          }
+
+                          if (text.length >= 2) {
+                            final mStr = text.substring(0, 2);
+                            final month = int.tryParse(mStr);
+                            if (month == null || month < 1 || month > 12) {
+                              return oldValue;
+                            }
+                          }
+
+                          if (text.length >= 3 && text[2] != '/') {
+                            return oldValue;
+                          }
+
+                          return newValue;
+                        }),
                       ],
                       maxLength: 5,
                       validator: (value) {
@@ -507,7 +549,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               const SizedBox(height: 20),
 
-              // Discount code
               Text('Student Discount'),
               const SizedBox(height: 8),
               Row(
@@ -536,7 +577,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               const SizedBox(height: 20),
 
-              // Totals
               Text('Laptop price: \$${widget.laptop.price.toStringAsFixed(2)}'),
               if (_isStudentDiscountApplied)
                 Text(
