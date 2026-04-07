@@ -20,7 +20,7 @@ class ThankYouPage extends StatelessWidget {
   final String customerEmail;
   final String maskedCardNumber;
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
