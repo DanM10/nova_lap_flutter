@@ -605,7 +605,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
 class _CardBrandChip extends StatelessWidget {
   const _CardBrandChip({required this.label, required this.isSelected});
-
   final String label;
   final bool isSelected;
 
