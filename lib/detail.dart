@@ -31,13 +31,17 @@ class DetailStat extends State<Detail> {
 
   @override
   Widget build(BuildContext context) {
+    final laptop = widget.laptop;
     return Scaffold(
       appBar: AppBar(title: const Text('NovaLap')),
       body: SingleChildScrollView(
         child: Column(
           spacing: 10,
           children: [
-            _carouselPhotos(widget.laptop, context),
+            Hero(
+              tag: 'laptop-${laptop.id}',
+              child: _carouselPhotos(widget.laptop, context),
+            ),
             Text(
               widget.laptop.brand,
               style: Theme.of(context).textTheme.titleLarge,
@@ -47,7 +51,10 @@ class DetailStat extends State<Detail> {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
               child: Text(
                 widget.laptop.description,
                 style: Theme.of(context).textTheme.bodySmall,
@@ -58,9 +65,9 @@ class DetailStat extends State<Detail> {
             Text(
               '\$${widget.laptop.price.toStringAsFixed(2)}',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
             const SizedBox(height: 20),
             Padding(
@@ -72,7 +79,8 @@ class DetailStat extends State<Detail> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CheckoutPage(laptop: widget.laptop),
+                        builder: (context) =>
+                            CheckoutPage(laptop: widget.laptop),
                       ),
                     );
                   },

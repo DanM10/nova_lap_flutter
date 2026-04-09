@@ -21,9 +21,7 @@ class HomeStat extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F7),
-      appBar: AppBar(
-        title: const Text('NovaLap'),
-      ),
+      appBar: AppBar(title: const Text('NovaLap')),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),
@@ -34,7 +32,7 @@ class HomeStat extends State<Home> {
           itemBuilder: (BuildContext context, int index) => laptopListBuilder(
             context,
             _laptops[index],
-            index == _laptops.length - 1
+            index == _laptops.length - 1,
           ),
         ),
       ),
@@ -42,79 +40,73 @@ class HomeStat extends State<Home> {
   }
 }
 
-Widget laptopListBuilder(
-    BuildContext context,
-    Product laptop,
-    bool lastItem
-    ) {
+Widget laptopListBuilder(BuildContext context, Product laptop, bool lastItem) {
   return GestureDetector(
     onTap: () {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => Detail(laptop: laptop),
-        ),
+        MaterialPageRoute(builder: (context) => Detail(laptop: laptop)),
       );
     },
-    child: Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            blurRadius: 8,
-            offset: Offset(0, 3),
-            color: Color.fromARGB(20, 0, 0, 0),
-          ),
-        ],
-      ),
-
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              laptop.firstImageSrc,
-              width: double.infinity,
-              height: 180,
-              fit: BoxFit.contain,
+    child: Hero(
+      tag: 'laptop-${laptop.id}',
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: const [
+            BoxShadow(
+              blurRadius: 8,
+              offset: Offset(0, 3),
+              color: Color.fromARGB(20, 0, 0, 0),
             ),
-          ),
+          ],
+        ),
 
-          const SizedBox(height: 14),
-
-          Text(
-            laptop.brand,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                laptop.firstImageSrc,
+                width: double.infinity,
+                height: 180,
+                fit: BoxFit.contain,
+              ),
             ),
-          ),
 
-          const SizedBox(height: 4),
+            const SizedBox(height: 14),
 
-          Text(
-            laptop.name,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+            Text(
+              laptop.brand,
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
 
-          const SizedBox(height: 10),
+            const SizedBox(height: 4),
 
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
+            Text(laptop.name, style: Theme.of(context).textTheme.bodyMedium),
+
+            const SizedBox(height: 10),
+
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text(
                 '\$${laptop.price}',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              )
-            )
-          )
-        ],
-      )
-    )
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
   );
 }
