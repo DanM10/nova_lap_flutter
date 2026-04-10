@@ -10,6 +10,7 @@ class ThankYouPage extends StatelessWidget {
     required this.totalAmount,
     required this.customerName,
     required this.customerEmail,
+    required this.cardholderName,
     required this.maskedCardNumber,
   });
 
@@ -18,15 +19,18 @@ class ThankYouPage extends StatelessWidget {
   final double totalAmount;
   final String customerName;
   final String customerEmail;
+  final String cardholderName;
   final String maskedCardNumber;
 
-   @override
+  @override
   Widget build(BuildContext context) {
+    final imageUrl = product.firstImageSrc;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order Confirmation'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +41,27 @@ class ThankYouPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text('Order ID: $orderId'),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
+
+            if (imageUrl.isNotEmpty) ...[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: Colors.grey.shade200,
+                      alignment: Alignment.center,
+                      child: const Text('Image unavailable'),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+
             const Text(
               'Order Summary',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -58,6 +82,7 @@ class ThankYouPage extends StatelessWidget {
             const SizedBox(height: 8),
             Text('Name: $customerName'),
             Text('Email used: $customerEmail'),
+            Text('Cardholder: $cardholderName'),
             Text('Card used: $maskedCardNumber'),
             const SizedBox(height: 16),
             const Text(
@@ -66,7 +91,7 @@ class ThankYouPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text('Total: \$${totalAmount.toStringAsFixed(2)}'),
-            const Spacer(),
+            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
