@@ -24,6 +24,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   final _cityController = TextEditingController();
   final _postalCodeController = TextEditingController();
   final _mobileController = TextEditingController();
+  final _cardholderNameController = TextEditingController();
   final _cardNumberController = TextEditingController();
   final _discountCodeController = TextEditingController();
 
@@ -48,6 +49,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     _cityController.dispose();
     _postalCodeController.dispose();
     _mobileController.dispose();
+    _cardholderNameController.dispose();
     _cardNumberController.dispose();
     _discountCodeController.dispose();
     super.dispose();
@@ -135,6 +137,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
     final fullName = '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}'.trim();
     final email = _emailController.text.trim();
+    final cardholderName = _cardholderNameController.text.trim();
 
     final cardNumber = _cardNumberController.text.trim();
     String maskedCard = '';
@@ -155,6 +158,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           totalAmount: total,
           customerName: fullName,
           customerEmail: email,
+          cardholderName: cardholderName,
           maskedCardNumber: maskedCard,
         ),
       ),
@@ -403,6 +407,27 @@ class _CheckoutPageState extends State<CheckoutPage> {
               const SizedBox(height: 8),
 
               TextFormField(
+                controller: _cardholderNameController,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+                ],
+                decoration: const InputDecoration(
+                  labelText: 'Cardholder Name',
+                ),
+                textInputAction: TextInputAction.next,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter cardholder name';
+                  }
+                  if (!_onlyLettersAndSpaces(value)) {
+                    return 'Only letters allowed';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 12),
+
+              TextFormField(
                 controller: _cardNumberController,
                 decoration: const InputDecoration(
                   labelText: 'Card Number',
@@ -486,11 +511,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         if (v.isEmpty) {
                           return 'Required';
                         }
-                        if (!RegExp(r'^(0[1-9]|1[0-2])\/(\d{2})').hasMatch(v)) {
+                        if (!RegExp(r'^(0[1-9]|1[0-2])/(\d{2})').hasMatch(v)) {
                           return 'Use MM/YY format';
                         }
                         final match =
-                            RegExp(r'^(0[1-9]|1[0-2])\/(\d{2})').firstMatch(v)!;
+                            RegExp(r'^(0[1-9]|1[0-2])/(\d{2})').firstMatch(v)!;
                         final mm = int.parse(match.group(1)!);
                         final yy = int.parse(match.group(2)!);
 
