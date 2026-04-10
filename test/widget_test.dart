@@ -7,24 +7,36 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:nova_lap/main.dart';
+import 'package:nova_lap/model/Product.dart';
+import 'package:nova_lap/thankyou.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('ThankYouPage shows cardholder name', (WidgetTester tester) async {
+    final product = Product(
+      id: 'p1',
+      name: 'Test Laptop',
+      brand: 'Nova',
+      price: 999.99,
+      description: 'Test',
+      imageUrls: const [],
+      quantity: 1,
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ThankYouPage(
+          orderId: 'ORD123',
+          product: product,
+          totalAmount: 123.45,
+          customerName: 'Jane Doe',
+          customerEmail: 'jane@example.com',
+          cardholderName: 'JANE DOE',
+          maskedCardNumber: '**** **** **** 4242',
+        ),
+      ),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Cardholder: JANE DOE'), findsOneWidget);
+    expect(find.text('Card used: **** **** **** 4242'), findsOneWidget);
   });
 }
