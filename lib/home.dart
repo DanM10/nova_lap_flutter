@@ -40,6 +40,8 @@ class HomeStat extends State<Home> {
   }
 }
 
+// Custom wodget to display products, using hero with the produt
+// id to not lose the tag reference
 Widget laptopListBuilder(BuildContext context, Product laptop, bool lastItem) {
   return GestureDetector(
     onTap: () {

@@ -14,6 +14,11 @@ class Detail extends StatefulWidget {
   }
 }
 
+
+/*
+* Carousel widget eith felc views that manage
+* the animation of the product images
+* */
 class DetailStat extends State<Detail> {
   Widget _carouselPhotos(Product laptop, BuildContext context) {
     final double height = MediaQuery.sizeOf(context).height;
@@ -38,6 +43,7 @@ class DetailStat extends State<Detail> {
         child: Column(
           spacing: 10,
           children: [
+            // hero widget in the weightes widget to animate the image
             Hero(
               tag: 'laptop-${laptop.id}',
               child: _carouselPhotos(widget.laptop, context),
