@@ -34,6 +34,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   void initState() {
     super.initState();
+     // Detect card type when user types card number
     _cardNumberController.addListener(_detectCardBrandFromNumber);
   }
 
@@ -54,7 +55,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     _discountCodeController.dispose();
     super.dispose();
   }
-
+// Detect card type based on first digit
   void _detectCardBrandFromNumber() {
     final text = _cardNumberController.text.trim();
     if (text.isEmpty) {
@@ -77,6 +78,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     setState(() {});
   }
 
+  // Check if input contains only letters/spaces
   bool _onlyLettersAndSpaces(String value) {
     final reg = RegExp(r'^[a-zA-Z ]+');
     return reg.hasMatch(value.trim());
@@ -94,6 +96,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
     return total;
   }
 
+  
+  // Apply discount code
   void _applyDiscountCode() {
     final code = _discountCodeController.text.trim();
 
@@ -118,6 +122,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
     }
   }
 
+
+  // Remove applied discount
   void _removeDiscount() {
     setState(() {
       _isStudentDiscountApplied = false;
