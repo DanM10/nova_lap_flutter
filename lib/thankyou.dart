@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nova_lap/model/Product.dart';
 import 'package:nova_lap/home.dart';
 
+
+// Displays order confirmation after successful checkout
 class ThankYouPage extends StatelessWidget {
   const ThankYouPage({
     super.key,
@@ -62,6 +64,8 @@ class ThankYouPage extends StatelessWidget {
               const SizedBox(height: 16),
             ],
 
+            
+            // Order summary section
             const Text(
               'Order Summary',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -85,6 +89,8 @@ class ThankYouPage extends StatelessWidget {
             Text('Cardholder: $cardholderName'),
             Text('Card used: $maskedCardNumber'),
             const SizedBox(height: 16),
+            
+            // Payment info
             const Text(
               'Payment',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
